@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Values.common.name }}-config-map
+  labels:
+    commit: {{ .Chart.AppVersion }}
+    app: {{ .Values.common.name }}
+data:
+{{- range $key, $value := .Values.config }}
+  {{ $key }}: "{{ $value }}"
+{{- end }}

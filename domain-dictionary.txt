@@ -1,0 +1,9 @@
+sequencename
+havingvalue
+refid
+artistid
+artistname
+favoriteartist
+oidcuser
+favoriteartist
+

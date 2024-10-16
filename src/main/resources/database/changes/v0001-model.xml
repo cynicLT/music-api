@@ -1,0 +1,35 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.20.xsd">
+
+    <!--    Sequences -->
+    <changeSet author="system" id="1">
+        <createSequence cycle="false" incrementBy="1" sequenceName="USER_SEQ" startValue="1"/>
+    </changeSet>
+
+    <!--    Tables -->
+    <changeSet author="system" id="2">
+        <createTable tableName="USER">
+            <column name="ID" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="EMAIL" type="CHARACTER VARYING">
+                <constraints nullable="false" unique="true" uniqueConstraintName="U_USER_EMAIL"/>
+            </column>
+            <column name="FAVORITE_ARTIST_REF_ID" type="CHARACTER VARYING"/>
+        </createTable>
+    </changeSet>
+
+    <!-- Constraints -->
+    <changeSet id="3" author="system">
+        <!-- PK -->
+        <addPrimaryKey tableName="USER" columnNames="ID" constraintName="PK_USER_ID"/>
+    </changeSet>
+
+    <!--    PostgreSQL -->
+    <changeSet id="4" author="system" dbms="postgresql">
+        <modifyDataType tableName="USER" columnName="EMAIL" newDataType="TEXT"/>
+        <modifyDataType tableName="USER" columnName="FAVORITE_ARTIST_REF_ID" newDataType="TEXT"/>
+    </changeSet>
+</databaseChangeLog>

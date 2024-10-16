@@ -1,0 +1,75 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.common.name }}-deployment
+  labels:
+    commit: {{ .Chart.AppVersion }}
+    app: {{ .Values.common.name }}
+spec:
+  selector:
+    matchLabels:
+      app: {{ .Values.common.name }}
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: {{ .Values.deployment.update.max.surge }}
+      maxUnavailable: {{ .Values.deployment.update.max.unavailable }}
+  template:
+    metadata:
+      annotations:
+        checksum/config-map: {{ include (print $.Template.BasePath "/config-map.yml") . | sha256sum }}
+        checksum/secret: {{ include (print $.Template.BasePath "/secret.yml") . | sha256sum }}
+      labels:
+        app: {{ .Values.common.name }}
+    spec:
+      securityContext:
+        fsGroup: {{ .Values.deployment.security.fs}}
+        runAsNonRoot: true
+        runAsUser: {{ .Values.deployment.security.user}}
+        runAsGroup: {{ .Values.deployment.security.group}}
+      volumes:
+        - name: logs
+          emptyDir:
+            { }
+        - name: temp
+          emptyDir:
+            { }
+      containers:
+        - name: {{ .Values.common.name }}
+          image: {{ .Values.deployment.docker.image.name}}
+          imagePullPolicy: {{ .Values.deployment.docker.image.pullPolicy}}
+          ports:
+            - containerPort: {{ .Values.common.port.http.value }}
+              name: {{ .Values.common.port.http.name }}
+            - containerPort: {{ .Values.common.port.hz.value }}
+              name: {{ .Values.common.port.hz.name }}
+          volumeMounts:
+            - name: logs
+              mountPath: /usr/src/app/data/logs
+            - name: temp
+              mountPath: /usr/src/app/data/temp
+          envFrom:
+            - secretRef:
+                name: {{ .Values.common.name }}-secret
+                optional: true
+            - configMapRef:
+                name: {{ .Values.common.name }}-config-map
+                optional: true
+          resources:
+            limits:
+              cpu: {{ .Values.deployment.limit.cpu}}
+              ephemeral-storage: {{ .Values.deployment.limit.storage}}
+              memory: {{ .Values.deployment.limit.memory}}
+          {{- range $item := .Values.deployment.probe.values}}
+          {{ $item.name}}:
+            httpGet:
+              path: {{ $.Values.deployment.probe.path}}
+              port: {{ $.Values.deployment.probe.port}}
+            periodSeconds: {{ $item.seconds.period}}
+            initialDelaySeconds: {{ $item.seconds.initialDelay}}
+            timeoutSeconds: {{ $item.seconds.timeout}}
+            failureThreshold: {{ $item.failureThreshold}}
+          {{- end }}
+          securityContext:
+            readOnlyRootFilesystem: true
+            allowPrivilegeEscalation: false

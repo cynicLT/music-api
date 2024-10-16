@@ -1,0 +1,87 @@
+spring:
+  application:
+    name: music-api
+  jackson:
+    default-property-inclusion: non_empty
+    serialization:
+      close-closeable: true
+    deserialization:
+      fail-on-unknown-properties: false
+      adjust-dates-to-context-time-zone: false
+  liquibase:
+    change-log: classpath:/database/change-log.xml
+  main:
+    log-startup-info: true
+    web-application-type: servlet
+    banner-mode: off
+  web:
+    resources:
+      cache:
+        cachecontrol:
+          max-age: 30D
+      add-mappings: true
+  datasource:
+    type: com.zaxxer.hikari.HikariDataSource
+    hikari:
+      maximum-pool-size: 10
+  jpa:
+    open-in-view: false
+    hibernate:
+      naming:
+        physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+        implicit-strategy: org.springframework.boot.orm.jpa.hibernate.SpringImplicitNamingStrategy
+      ddl-auto: validate
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: https://accounts.google.com
+          jwk-set-uri: https://www.googleapis.com/oauth2/v3/certs
+          jws-algorithms: RS256
+  threads:
+    virtual:
+      enabled: true
+
+system:
+  org.jboss.logging.provider: slf4j
+  hazelcast.cluster-name: ${spring.application.name}
+  hazelcast.join.tcp-ip.interface: 127.0.0.1
+  hazelcast.join.tcp-ip.port: 5701
+  hazelcast.properties.logging-type: none
+  hazelcast.join.kubernetes.service-dns: ${spring.application.name}-headless-service
+
+
+management:
+  metrics:
+    enable:
+      all: false
+
+server:
+  error:
+    whitelabel:
+      enabled: false
+  shutdown: graceful
+  forward-headers-strategy: framework
+
+hazelcast:
+  config: classpath:/hazelcast.xml
+
+resilience4j:
+  circuitbreaker:
+    configs:
+      default:
+        record-exceptions:
+          - org.cynic.music_api.domain.ApplicationException
+          - io.github.resilience4j.circuitbreaker.CallNotPermittedException
+          - io.github.resilience4j.circuitbreaker.IllegalStateTransitionException
+          - io.github.resilience4j.circuitbreaker.ResultRecordedAsFailureException
+        registerHealthIndicator: false
+        minimumNumberOfCalls: 2
+        permittedNumberOfCallsInHalfOpenState: 1
+        waitDurationInOpenState: 30s
+
+api:
+  uri: https://itunes.apple.com
+  timeout:
+    connection: 5S
+    read: 30S

@@ -1,0 +1,21 @@
+spring:
+  datasource:
+    url: jdbc:h2:mem:db;MODE=PostgreSQL
+    username: sa
+    password:
+    driver-class-name: org.h2.Driver
+  jpa:
+    show-sql: false
+    hibernate:
+      ddl-auto: validate
+  security:
+    token:
+      validate: false
+  main:
+    allow-bean-definition-overriding: true
+
+api:
+  uri: http://localhost:9090/
+  timeout:
+    connection: 5S
+    read: 30S

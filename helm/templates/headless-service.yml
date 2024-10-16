@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Values.common.name}}-headless-service
+spec:
+  type: {{.Values.service.type}}
+  clusterIP: None
+  selector:
+    app: {{ .Values.common.name}}
+  ports:
+    - name: {{ .Values.common.port.hz.name }}
+      port: {{ .Values.common.port.hz.value }}
