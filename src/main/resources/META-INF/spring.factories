@@ -1,0 +1,5 @@
+org.springframework.boot.env.EnvironmentPostProcessor=\
+  org.cynic.music_api.framework.environment.SingleActiveProfileEnvironmentPostProcessor,\
+  org.cynic.music_api.framework.environment.SystemPropertiesEnvironmentPostProcessor
+org.springframework.context.ApplicationListener=\
+  org.cynic.music_api.framework.listener.PropertiesApplicationListener
