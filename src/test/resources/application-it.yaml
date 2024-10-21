@@ -15,7 +15,13 @@ spring:
     allow-bean-definition-overriding: true
 
 api:
-  uri: http://localhost:9090/
+  uri: http://localhost:9900/
   timeout:
     connection: 5S
     read: 30S
+
+resilience4j:
+  circuitbreaker:
+    configs:
+      default:
+        minimumNumberOfCalls: 10

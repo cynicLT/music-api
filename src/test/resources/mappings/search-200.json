@@ -1,0 +1,49 @@
+{
+    "request": {
+        "method": "GET",
+        "urlPath": "/search",
+        "queryParameters": {
+            "entity": {
+                "equalTo": "allArtist"
+            },
+            "term": {
+                "equalTo": "abba"
+            },
+            "limit": {
+                "matches": "\\d+"
+            }
+        }
+    },
+    "response": {
+        "status": 200,
+        "jsonBody": {
+            "resultCount": 2,
+            "results": [
+                {
+                    "wrapperType": "artist",
+                    "artistType": "Artist",
+                    "artistName": "ABBA",
+                    "artistLinkUrl": "https://music.apple.com/us/artist/abba/372976?uo=4",
+                    "artistId": 372976,
+                    "amgArtistId": 3492,
+                    "primaryGenreName": "Pop",
+                    "primaryGenreId": 14
+                },
+                {
+                    "wrapperType": "artist",
+                    "artistType": "Artist",
+                    "artistName": "Benny Andersson",
+                    "artistLinkUrl": "https://music.apple.com/us/artist/benny-andersson/376154?uo=4",
+                    "artistId": 376154,
+                    "amgArtistId": 51752,
+                    "primaryGenreName": "Pop",
+                    "primaryGenreId": 14
+                }
+            ]
+        },
+        "headers": {
+            "Content-Type": "text/javascript"
+        }
+    }
+}
+

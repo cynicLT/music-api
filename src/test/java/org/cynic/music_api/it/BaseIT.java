@@ -1,9 +1,14 @@
 package org.cynic.music_api.it;
 
+import com.github.tomakehurst.wiremock.WireMockServer;
+import com.github.tomakehurst.wiremock.core.WireMockConfiguration;
 import io.restassured.RestAssured;
+import java.net.URL;
 import org.cynic.music_api.Configuration;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Tag;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.boot.test.web.server.LocalServerPort;
@@ -37,9 +42,23 @@ public class BaseIT {
     @LocalServerPort
     private int serverPort;
 
+
+    @Value("${api.uri}")
+    private URL api;
+
+    private WireMockServer wireMockServer;
+
     @BeforeEach
     public void setup() {
         RestAssured.port = serverPort;
         RestAssured.enableLoggingOfRequestAndResponseIfValidationFails();
+
+        wireMockServer = new WireMockServer(WireMockConfiguration.options().port(api.getPort()));
+        wireMockServer.start();
+    }
+
+    @AfterEach
+    void tearDown() {
+        wireMockServer.stop();
     }
 }

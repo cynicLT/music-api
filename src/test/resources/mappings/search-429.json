@@ -1,0 +1,25 @@
+{
+    "request": {
+        "method": "GET",
+        "urlPath": "/search",
+        "queryParameters": {
+            "entity": {
+                "equalTo": "allArtist"
+            },
+            "term": {
+                "equalTo": "sel"
+            },
+            "limit": {
+                "equalTo": "13"
+            }
+        }
+    },
+    "response": {
+        "status": 429,
+        "body": "Limit exceeded",
+        "headers": {
+            "Content-Type": "text/javascript"
+        }
+    }
+}
+
